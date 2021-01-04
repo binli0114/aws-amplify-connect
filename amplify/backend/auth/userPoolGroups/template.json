@@ -5,10 +5,12 @@
             "Type": "String",
             "Default": "authlonelyconnect0f468434UserPoolId"
         },
+        
         "authlonelyconnect0f468434IdentityPoolId": {
             "Type": "String",
             "Default": "authlonelyconnect0f468434IdentityPoolId"
         },
+        
         "authlonelyconnect0f468434AppClientID": {
             "Type": "String",
             "Default": "authlonelyconnect0f468434AppClientID"
@@ -44,17 +46,20 @@
           "Properties" : {
               "GroupName" : "Uploaders",
               "Precedence" : 1,
+              
               "RoleArn" : {
                 "Fn::GetAtt": [
                     "UploadersGroupRole",
                     "Arn"
                 ]
               },
+              
               "UserPoolId" : {
                 "Ref": "authlonelyconnect0f468434UserPoolId"
               } 
             }
         },
+        
         "UploadersGroupRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -88,6 +93,8 @@
                 }
             }
         },
+     
+    
     
         "LambdaExecutionRole": {
             "Type": "AWS::IAM::Role",
@@ -283,7 +290,9 @@
             },
             "DependsOn": ["RoleMapFunction"]
         }
+   
     },
+    
     "Outputs": {
       
         "UploadersGroupRole": {
@@ -298,4 +307,5 @@
         
       
     }
+    
 }

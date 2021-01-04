@@ -47,3 +47,5 @@ connect/generatedDialerFlow.json
 amplify/backend/function/ConnectDialerJS/parameters.json
 amplify/team-provider-info.json
 
+.idea
+.eslintcache

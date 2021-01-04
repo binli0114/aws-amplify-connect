@@ -27,7 +27,7 @@ const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient({region: region});
 const connect = new AWS.Connect(); 
 
-exports.handler = async (event) => {
+const handler = async (event) => {
     // log event 
     console.log('Received Event:', JSON.stringify(event, null, 2));
 
@@ -148,32 +148,31 @@ async function callOutbound(phoneNumbers){
         }
 
         //publishCWMetric()
-
         // Now Datetime
-        var now = new Date();
-        var nowseconds = Math.round(now.getTime() / 1000);
-        var nowisostring = now.toISOString();
-
-        let dynamoParams = {
-            TableName: storageContactsStoreName,
-            Key: {
-                "telephoneNumber": item["telephoneNumber"]
-            },
-            UpdateExpression: "set contactAttempts = contactAttempts + :val, lastAttempt=:la, lastAttemptDateTime=:ladt",
-            ExpressionAttributeValues: {
-                ':val': 1,
-                ':la': nowseconds,
-                ':ladt': nowisostring
-            }
-        };
-        console.log(`update DDB params: ${JSON.stringify(dynamoParams)}`);
-
-        try {
-            var result = await docClient.update(dynamoParams).promise();
-        } catch (error) {
-            console.error(error);
-        }
-        console.log(`queryDDB result: ${result}`); 
+        // var now = new Date();
+        // var nowseconds = Math.round(now.getTime() / 1000);
+        // var nowisostring = now.toISOString();
+        //
+        // let dynamoParams = {
+        //     TableName: storageContactsStoreName,
+        //     Key: {
+        //         "telephoneNumber": item["telephoneNumber"]
+        //     },
+        //     UpdateExpression: "set contactAttempts = contactAttempts + :val, lastAttempt=:la, lastAttemptDateTime=:ladt",
+        //     ExpressionAttributeValues: {
+        //         ':val': 1,
+        //         ':la': nowseconds,
+        //         ':ladt': nowisostring
+        //     }
+        // };
+        // console.log(`update DDB params: ${JSON.stringify(dynamoParams)}`);
+        //
+        // try {
+        //     var result = await docClient.update(dynamoParams).promise();
+        // } catch (error) {
+        //     console.error(error);
+        // }
+        // console.log(`queryDDB result: ${result}`);
     });
 }
 
@@ -254,4 +253,9 @@ async function GetConnectMetric(queue, cID){
     } else {
         return -1;
     }
+}
+
+module.exports={
+    handler,
+    callOutbound
 }

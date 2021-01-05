@@ -1,7 +1,7 @@
 const AWS = require("aws-sdk");
-const region = process.env.REGION;
+const region = process.env.AWS_REGION;
 const tableName = "contactsStore-test";
-const updateConnectTable = async telephoneNumber => {
+const updateConnectTable = async (telephoneNumber, contactId) => {
   const docClient = new AWS.DynamoDB.DocumentClient({ region });
 
   const now = new Date();
@@ -14,18 +14,19 @@ const updateConnectTable = async telephoneNumber => {
       telephoneNumber
     },
     UpdateExpression:
-      "set contactAttempts = contactAttempts + :val, lastAttempt=:la, lastAttemptDateTime=:ladt",
+      "set contactAttempts = contactAttempts + :val, lastAttempt=:la, lastAttemptDateTime=:ladt, contactId=:contactId",
     ExpressionAttributeValues: {
       ":val": 1,
       ":la": nowseconds,
-      ":ladt": nowisostring
+      ":ladt": nowisostring,
+      ":contactId": contactId
     }
   };
   console.log(`update DDB params: ${JSON.stringify(dynamoParams)}`);
 
   try {
     const result = await docClient.update(dynamoParams).promise();
-    console.log(`queryDDB result: ${result}`);
+    console.log(`update result: ${result}`);
   } catch (error) {
     console.error(error);
   }
@@ -42,9 +43,9 @@ async function queryDDB() {
   //var nowisostring = now.toISOString();
 
   const lastSuccessThreshold = nowseconds - minutesBetweenSuccesses * 60;
-  //console.log(`lastSuccessThreshold: ${lastSuccessThreshold}`);
+  console.log(`lastSuccessThreshold: ${lastSuccessThreshold}`);
   const lastAttemptThreshold = nowseconds - minutesBetweenCalls * 60;
-  //console.log(`lastAttemptThreshold: ${lastAttemptThreshold}`);
+  console.log(`lastAttemptThreshold: ${lastAttemptThreshold}`);
 
   // DynamoDB parameters
   const params = {

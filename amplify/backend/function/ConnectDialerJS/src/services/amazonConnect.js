@@ -5,13 +5,16 @@ const region = process.env.AWS_REGION;
 async function callOutbound(connectInstanceId, callItem) {
   const connect = new AWS.Connect({ apiVersion: "2017-08-08", region });
 
-  const { telephoneNumber: formatted, organisation } = callItem;
+  const { telephoneNumber: formatted, organisation, firstName } = callItem;
   console.log(`Attempting Call: ${formatted}`);
-
+  let hiMessage = "hi";
+  if (firstName) {
+    hiMessage = `hi ${firstName}`;
+  }
   let promptMessage =
     "How are you feeling today? Press 1 for Happy, press 2 if you would like to talk.";
   if (organisation) {
-    promptMessage = `We are calling you on behalf of ${organisation}. ${promptMessage}`;
+    promptMessage = `${hiMessage}. We are calling you on behalf of ${organisation}. ${promptMessage}`;
   }
   const connectParams = {
     DestinationPhoneNumber: formatted,

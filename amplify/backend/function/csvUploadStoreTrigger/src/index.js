@@ -53,12 +53,13 @@ exports.handler = async function(event, context) {
           enabled: "1",
           choice: "new",
           contactAttempts: 0,
-          lastSuccess: "-1",
+          lastSuccess: 0,
           lastAttempt: nowseconds,
           lastAttemptDateTime: nowisostring,
           lastSuccessDateTime: nowisostring,
           successfulConnections: 0,
-          createdDateTime: nowisostring
+          createdDateTime: nowisostring,
+          organisation: obj.organisation
         },
         ConditionExpression: "attribute_not_exists(telephoneNumber)"
       };

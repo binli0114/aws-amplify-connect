@@ -2,10 +2,13 @@ const AWS = require("aws-sdk");
 const cFlowID = process.env.cFlowID;
 const sNum = process.env.sourcePhoneNumber;
 const region = process.env.AWS_REGION;
-async function callOutbound(connectInstanceId, callItem) {
+const currentConnectQueue = process.env.queue;
+const connectInstanceId = process.env.instance;
+const { updateConnectTable } = require("./dynamodb");
+async function callOutbound(callingItem) {
   const connect = new AWS.Connect({ apiVersion: "2017-08-08", region });
 
-  const { telephoneNumber: formatted, organisation, firstName } = callItem;
+  const { telephoneNumber: formatted, organisation, firstName } = callingItem;
   console.log(`Attempting Call: ${formatted}`);
   let hiMessage = "hi";
   if (firstName) {
@@ -31,24 +34,23 @@ async function callOutbound(connectInstanceId, callItem) {
     const response = await connect
       .startOutboundVoiceContact(connectParams)
       .promise();
-    console.log(response);
-    return response;
+    console.log(`calling result ${JSON.stringify(response, undefined, 2)}`);
+    updateConnectTable(formatted, response.ContactId);
   } catch (error) {
     console.error(error);
   }
-  return null;
 }
 
-async function GetConnectMetric(queue, instanceId) {
+async function GetConnectMetric() {
   const connect = new AWS.Connect({
     apiVersion: "2017-08-08",
     region
   });
 
   const params = {
-    InstanceId: instanceId,
+    InstanceId: connectInstanceId,
     Filters: {
-      Queues: [queue],
+      Queues: [currentConnectQueue],
       Channels: ["VOICE"]
     },
     Groupings: ["QUEUE"],

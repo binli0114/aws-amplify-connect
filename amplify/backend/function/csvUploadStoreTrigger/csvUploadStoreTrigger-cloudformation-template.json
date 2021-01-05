@@ -89,7 +89,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-aws-amplify-connect-test-230302-deployment",
-          "S3Key": "amplify-builds/csvUploadStoreTrigger-7a78465050785771537a-build.zip"
+          "S3Key": "amplify-builds/csvUploadStoreTrigger-46533238387835647465-build.zip"
         }
       }
     },

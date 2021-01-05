@@ -7,7 +7,7 @@ process.env.AWS_REGION = "ap-southeast-2";
 process.env.minutesBetweenSuccesses = 1440;
 process.env.minutesBetweenCalls = 60;
 process.env.maxAttempts = 5;
-const { handler } = require("../src/index");
+const { handler } = require("../index");
 
 (async () => {
   await handler();

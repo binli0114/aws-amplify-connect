@@ -14,10 +14,10 @@ const updateConnectTable = async (telephoneNumber, contactId) => {
       telephoneNumber
     },
     UpdateExpression:
-      "set contactAttempts = contactAttempts + :val, lastAttempt=:la, lastAttemptDateTime=:ladt, contactId=:contactId",
+      "set contactAttempts = contactAttempts + :val, lastAttempt=:lastAttempt, lastAttemptDateTime=:ladt, contactId=:contactId",
     ExpressionAttributeValues: {
       ":val": 1,
-      ":la": nowseconds,
+      ":lastAttempt": nowseconds,
       ":ladt": nowisostring,
       ":contactId": contactId
     }
@@ -26,7 +26,7 @@ const updateConnectTable = async (telephoneNumber, contactId) => {
 
   try {
     const result = await docClient.update(dynamoParams).promise();
-    console.log(`update result: ${result}`);
+    console.log(`update db result: ${JSON.stringify(result, undefined, 2)}`);
   } catch (error) {
     console.error(error);
   }
@@ -43,9 +43,7 @@ async function queryDDB() {
   //var nowisostring = now.toISOString();
 
   const lastSuccessThreshold = nowseconds - minutesBetweenSuccesses * 60;
-  console.log(`lastSuccessThreshold: ${lastSuccessThreshold}`);
   const lastAttemptThreshold = nowseconds - minutesBetweenCalls * 60;
-  console.log(`lastAttemptThreshold: ${lastAttemptThreshold}`);
 
   // DynamoDB parameters
   const params = {

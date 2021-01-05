@@ -13,16 +13,9 @@ Amplify Params - DO NOT EDIT */
 // const storageContactsStoreName = process.env.STORAGE_CONTACTSSTORE_NAME;
 // const storageContactsStoreArn = process.env.STORAGE_CONTACTSSTORE_ARN;
 
-const currentConnectQueue = process.env.queue;
-const connectInstanceId = process.env.instance;
-
 // const minFA = process.env.minFreeAgents;
 // const index = process.env.index;
-const {
-  queryDDB,
-  updateConnectTable,
-  resetMaxAttempts
-} = require("./services/dynamodb");
+const { queryDDB } = require("./services/dynamodb");
 
 const { GetConnectMetric, callOutbound } = require("./services/amazonConnect");
 
@@ -31,10 +24,7 @@ const handler = async event => {
   console.log("Received Event:", JSON.stringify(event, null, 2));
 
   // get # of available agents
-  const agentsAvailable = await GetConnectMetric(
-    currentConnectQueue,
-    connectInstanceId
-  );
+  const agentsAvailable = await GetConnectMetric();
   console.log(`Agents available: ${agentsAvailable}`);
 
   // setup response text
@@ -51,10 +41,7 @@ const handler = async event => {
     if (result.Count > 0) {
       const pendingCallItems = result.Items;
       await pendingCallItems.forEach(async item => {
-        const callResult = await callOutbound(connectInstanceId, item);
-        if (callResult && callResult.ContactId) {
-          await updateConnectTable(item.telephoneNumber, callResult.ContactId);
-        }
+        await callOutbound(item);
       });
     } else {
       console.log(`No numbers ready to call`);
@@ -63,7 +50,7 @@ const handler = async event => {
   }
 
   // reset if attempts is eq maxAttempts, reset if attempt time is older than (minutesBetweenSuccesses) 24 hours
-  await resetMaxAttempts();
+  //await resetMaxAttempts();
 
   // build response
   const response = {

@@ -54,7 +54,7 @@ exports.handler = async function(event, context) {
           choice: "new",
           contactAttempts: 0,
           lastSuccess: 0,
-          lastAttempt: nowseconds,
+          lastAttempt: 0,
           lastAttemptDateTime: nowisostring,
           lastSuccessDateTime: nowisostring,
           successfulConnections: 0,

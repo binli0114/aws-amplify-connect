@@ -4,7 +4,6 @@ const sNum = process.env.sourcePhoneNumber;
 const region = process.env.AWS_REGION;
 const currentConnectQueue = process.env.queue;
 const connectInstanceId = process.env.instance;
-const { updateConnectTable } = require("./dynamodb");
 async function callOutbound(callingItem) {
   const connect = new AWS.Connect({ apiVersion: "2017-08-08", region });
 
@@ -31,11 +30,7 @@ async function callOutbound(callingItem) {
   };
 
   try {
-    const response = await connect
-      .startOutboundVoiceContact(connectParams)
-      .promise();
-    console.log(`calling result ${JSON.stringify(response, undefined, 2)}`);
-    updateConnectTable(formatted, response.ContactId);
+    await connect.startOutboundVoiceContact(connectParams).promise();
   } catch (error) {
     console.error(error);
   }

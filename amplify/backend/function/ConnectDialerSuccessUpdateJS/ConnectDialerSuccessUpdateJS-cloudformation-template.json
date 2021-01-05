@@ -77,7 +77,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-aws-amplify-connect-test-230302-deployment",
-          "S3Key": "amplify-builds/ConnectDialerSuccessUpdateJS-6d375453486b7a71794f-build.zip"
+          "S3Key": "amplify-builds/ConnectDialerSuccessUpdateJS-6a4a4b75567662773250-build.zip"
         }
       }
     },
